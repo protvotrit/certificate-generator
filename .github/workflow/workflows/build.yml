@@ -3,45 +3,42 @@ name: Build EXE and Create Release
 on:
   push:
     tags:
-      -'V*'
+      - 'v*' # Сработает при пуше тега, например v3.5, v4.0 и т.д.
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-latest # Собираем на Windows, чтобы получить .exe
 
     steps:
-    - name: Checkout cide
+    - name: Checkout code
       uses: actions/checkout@v4
 
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.13'
+        python-version: '3.13' # Твоя версия Python
 
-    - name: Install dependedencies
+    - name: Install dependencies
       run: |
         py -m pip install --upgrade pip
-        py -m pip install pyinstaller pillow customtkinter pandas openpuxl
+        py -m pip install pyinstaller pillow customtkinter pandas openpyxl
 
     - name: Build with PyInstaller
+      # Здесь мы используем py -m PyInstaller для максимальной надежности
       run: |
         py -m PyInstaller --noconsole --onefile --name "CertGen_V2" --add-data "views;views" --add-data "models;models" --add-data "controllers;controllers" main.py
 
     - name: Create Release and Upload Asset
       uses: softprops/action-gh-release@v2
-      with: 
+      with:
         files: dist/CertGen_V2.exe
         name: Release ${{ github.ref_name }}
         body: |
-          Автоматичская сборка проекта.
-          Версия:  ${{ github.ref_name }}
-
-          Скачать CertGen_V2.exe ниже, что бы запустить программу. 
-
+          Автоматическая сборка проекта.
+          Версия: ${{ github.ref_name }}
+          
+          Скачайте CertGen_V2.exe ниже, чтобы запустить программу.
         draft: false
         prerelease: false
-
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
