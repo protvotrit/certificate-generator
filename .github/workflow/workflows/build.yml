@@ -1,0 +1,47 @@
+name: Build EXE and Create Release
+
+on:
+  push:
+    tags:
+      -'V*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout cide
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+
+    - name: Install dependedencies
+      run: |
+        py -m pip install --upgrade pip
+        py -m pip install pyinstaller pillow customtkinter pandas openpuxl
+
+    - name: Build with PyInstaller
+      run: |
+        py -m PyInstaller --noconsole --onefile --name "CertGen_V2" --add-data "views;views" --add-data "models;models" --add-data "controllers;controllers" main.py
+
+    - name: Create Release and Upload Asset
+      uses: softprops/action-gh-release@v2
+      with: 
+        files: dist/CertGen_V2.exe
+        name: Release ${{ github.ref_name }}
+        body: |
+          Автоматичская сборка проекта.
+          Версия:  ${{ github.ref_name }}
+
+          Скачать CertGen_V2.exe ниже, что бы запустить программу. 
+
+        draft: false
+        prerelease: false
+
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
