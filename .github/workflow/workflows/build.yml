@@ -1,44 +1,37 @@
-name: Build EXE and Create Release
+name: Build EXE
 
 on:
   push:
     tags:
-      - 'v*' # Сработает при пуше тега, например v3.5, v4.0 и т.д.
+      - 'v*'
 
 jobs:
   build:
-    runs-on: windows-latest # Собираем на Windows, чтобы получить .exe
+    runs-on: windows-latest
+    permissions:
+      contents: write
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.13' # Твоя версия Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
 
-    - name: Install dependencies
-      run: |
-        py -m pip install --upgrade pip
-        py -m pip install pyinstaller pillow customtkinter pandas openpyxl
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller pillow customtkinter pandas openpyxl
 
-    - name: Build with PyInstaller
-      # Здесь мы используем py -m PyInstaller для максимальной надежности
-      run: |
-        py -m PyInstaller --noconsole --onefile --name "CertGen_V2" --add-data "views;views" --add-data "models;models" --add-data "controllers;controllers" main.py
+      - name: Build with PyInstaller
+        run: |
+          python -m PyInstaller --noconsole --onefile --name "CertGen_V2" --add-data "views;views" --add-data "models;models" --add-data "controllers;controllers" main.py
 
-    - name: Create Release and Upload Asset
-      uses: softprops/action-gh-release@v2
-      with:
-        files: dist/CertGen_V2.exe
-        name: Release ${{ github.ref_name }}
-        body: |
-          Автоматическая сборка проекта.
-          Версия: ${{ github.ref_name }}
-          
-          Скачайте CertGen_V2.exe ниже, чтобы запустить программу.
-        draft: false
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/CertGen_V2.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
