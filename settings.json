@@ -1,0 +1,20 @@
+{
+    "coords": {
+        "ФИО": "(5690, 1837)",
+        "Программа": "(5711, 2915)",
+        "Рег. номер": "(2506, 4063)",
+        "Часы": "(5760, 3358)"
+    },
+    "sizes": {
+        "ФИО": "95",
+        "Программа": "100",
+        "Рег. номер": "110",
+        "Часы": "110"
+    },
+    "paths": {
+        "data": "C:/Users/Игорь/PycharmProjects/Sertificats/data.xlsx",
+        "template": "C:/Users/Игорь/PycharmProjects/Sertificats/Frame 70.jpg",
+        "font": "C:/Users/Игорь/PycharmProjects/Sertificats/Montserrat-Bold.ttf",
+        "output": "C:/Users/Игорь/Downloads/Cth"
+    }
+}
